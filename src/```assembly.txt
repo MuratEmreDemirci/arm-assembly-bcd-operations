@@ -1,0 +1,107 @@
+```assembly
+        AREA    HOMEWORK4, CODE, READONLY
+        ENTRY
+        EXPORT  __main
+
+__main
+
+; =========================================
+; 1) ASCII → UNPACKED BCD
+; =========================================
+
+        LDR     R0, =0x20001000     ; Memory start
+
+        MOV     R1, #24             ; "24"
+        MOV     R2, #35             ; "35"
+        MOV     R3, #6              ; "06"
+
+        AND     R1, R1, #0x0F       ; lower nibble
+        AND     R2, R2, #0x0F
+        AND     R3, R3, #0x0F
+
+        STR     R1, [R0], #4
+        STR     R2, [R0], #4
+        STR     R3, [R0], #4
+
+
+; =========================================
+; 2) ASCII → PACKED BCD
+; =========================================
+
+        LDR     R0, =0x20001010     ; next memory
+
+        MOV     R1, #24
+        MOV     R2, #35
+        MOV     R3, #6
+
+        ; 24 → 0x24
+        MOV     R4, R1, LSR #4
+        AND     R5, R1, #0x0F
+        LSL     R4, R4, #4
+        ORR     R4, R4, R5
+        STR     R4, [R0], #4
+
+        ; 35 → 0x35
+        MOV     R4, R2, LSR #4
+        AND     R5, R2, #0x0F
+        LSL     R4, R4, #4
+        ORR     R4, R4, R5
+        STR     R4, [R0], #4
+
+        ; 06 → 0x06
+        MOV     R4, R3, LSR #4
+        AND     R5, R3, #0x0F
+        LSL     R4, R4, #4
+        ORR     R4, R4, R5
+        STR     R4, [R0], #4
+
+
+; =========================================
+; 3) BCD → ASCII
+; =========================================
+
+        LDR     R0, =0x20002000
+
+        MOV     R1, #0x24
+        MOV     R2, #0x35
+        MOV     R3, #0x06
+
+        ; lower digit
+        AND     R4, R1, #0x0F
+        ADD     R4, R4, #0x30
+        STR     R4, [R0], #4
+
+        MOV     R4, R2, LSR #4
+        ADD     R4, R4, #0x30
+        STR     R4, [R0], #4
+
+        AND     R4, R3, #0x0F
+        ADD     R4, R4, #0x30
+        STR     R4, [R0], #4
+
+
+; =========================================
+; 4) 1500 - (1+2+...+50)
+; =========================================
+
+        LDR     R0, =0x20003000
+
+        MOV     R1, #1500
+        MOV     R2, #1
+        MOV     R3, #50
+
+LOOP
+        SUB     R1, R1, R2
+        STR     R1, [R0], #4
+
+        ADD     R2, R2, #1
+        CMP     R2, R3
+        BNE     LOOP
+
+; =========================================
+
+STOP
+        B       STOP
+
+        END
+```

@@ -1,0 +1,19 @@
+    AREA ASCII_TO_BCD, CODE, READONLY
+    ENTRY
+    EXPORT __main
+__main
+    LDR R0,=0x20001000   ; Memory start address
+    MOV R1,#24           ; ASCII value 24
+    MOV R2,#35           ; ASCII value 35
+    MOV R3,#6            ; ASCII value 06
+    
+    AND R1,R1,#0x0F      ; Extract lower nibble
+    AND R2,R2,#0x0F
+    AND R3,R3,#0x0F
+
+    STR R1,[R0],#4       ; Store unpacked BCD
+    STR R2,[R0],#4
+    STR R3,[R0],#4
+
+HERE B HERE
+    END

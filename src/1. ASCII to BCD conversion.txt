@@ -1,0 +1,18 @@
+1. ASCII to BCD conversion:
+
+Write the assembly program that converts the numbers "24,35,06" into
+
+a) unpacked BCD
+
+b) packed BCD
+
+one by one then save the results into memory starting from address 0x20001000 and increasing 4 byte by 4 byte.
+
+2. BCD to ASCII conversion:
+
+Write the assembly program that converts the packed BCD values "0x24,0x35,0x06" into ASCII one by one then save the results into memory starting from address 0x20002000 and increasing 4 byte by 4 byte.
+
+3. Write the assembly program that uses branching to substract all the numbers in the series "1,2,3,4.....49,50" from 1500 one by one. Save the result into memory address 0x20003000.
+
+Run your programs and show results. 
+Show the resulting changes in the memory, flags and registers.

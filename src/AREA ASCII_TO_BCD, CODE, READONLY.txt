@@ -1,0 +1,86 @@
+    AREA ASCII_TO_BCD, CODE, READONLY
+    ENTRY
+    EXPORT __main
+__main
+    LDR R0,=0x20001000   ; Memory start address
+    MOV R1,#24           ; ASCII value 24
+    MOV R2,#35           ; ASCII value 35
+    MOV R3,#6            ; ASCII value 06
+    
+    AND R1,R1,#0x0F      ; Extract lower nibble
+    AND R2,R2,#0x0F
+    AND R3,R3,#0x0F
+
+    STR R1,[R0],#4       ; Store unpacked BCD
+    STR R2,[R0],#4
+    STR R3,[R0],#4
+
+    B HERE
+HERE B HERE
+    END
+    AREA ASCII_TO_PACKED_BCD, CODE, READONLY
+    ENTRY
+    EXPORT __main
+__main
+    LDR R0,=0x20001000   ; Memory start address
+    MOV R1,#24           ; ASCII value 24
+    MOV R2,#35           ; ASCII value 35
+    MOV R3,#6            ; ASCII value 06
+    
+    AND R1,R1,#0x0F      ; Extract lower nibble
+    AND R2,R2,#0x0F
+    AND R3,R3,#0x0F
+
+    MOV R4,R2,LSL #4     ; Shift upper digit
+    ORR R4,R4,R1         ; Combine digits
+    STR R4,[R0],#4       ; Store packed BCD
+
+    MOV R5,R3,LSL #4
+    STR R5,[R0],#4
+
+    B HERE
+HERE B HERE
+    END
+    AREA BCD_TO_ASCII, CODE, READONLY
+    ENTRY
+    EXPORT __main
+__main
+    LDR R0,=0x20002000   ; Memory start address
+    MOV R1,#0x24         ; Packed BCD 24
+    MOV R2,#0x35         ; Packed BCD 35
+    MOV R3,#0x06         ; Packed BCD 06
+    
+    AND R1,R1,#0x0F      ; Extract lower nibble
+    ORR R1,R1,#0x30      ; Convert to ASCII
+    STR R1,[R0],#4       ; Store ASCII
+
+    MOV R4,R2,LSR #4     ; Extract upper nibble
+    ORR R4,R4,#0x30
+    STR R4,[R0],#4
+
+    AND R5,R3,#0x0F
+    ORR R5,R5,#0x30
+    STR R5,[R0],#4
+
+    B HERE
+HERE B HERE
+    END
+    AREA SUBTRACT_SERIES, CODE, READONLY
+    ENTRY
+    EXPORT __main
+__main
+    LDR R0,=0x20003000   ; Memory start address
+    MOV R1,#1500         ; Initial value
+    MOV R2,#1            ; Start of series
+    MOV R3,#50           ; End of series
+
+LOOP
+    SUB R1,R1,R2         ; Subtract number from 1500
+    STR R1,[R0],#4       ; Store result in memory
+    ADD R2,R2,#1         ; Increment series number
+    CMP R2,R3            ; Compare with end value
+    BNE LOOP             ; Repeat until 50
+
+    B HERE
+HERE B HERE
+    END
